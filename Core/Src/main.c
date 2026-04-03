@@ -18,10 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usart.h"
 #include "gpio.h"
-
+#include "atk_qmi8658.h"
+#include "sys.h"
+#include "delay.h"
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "string.h"
 
 /* USER CODE END Includes */
 
@@ -55,6 +60,14 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+
+int fputc(int ch, FILE *f)
+{
+ 
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xffff);
+    return ch;
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -65,6 +78,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
+float accel[3]; 
+float gyro[3];  
+float temp;     
 
   /* USER CODE END 1 */
 
@@ -86,20 +103,74 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+delay_init(72);  
+printf("Starting QMI8658A test...\r\n"); 
 
+while(atk_qmi8658_init() != 0) 
+{
+    printf("QMI8658A Check Failed!\r\n"); 
+}
+printf("QMI8658A Ready!\r\n"); 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		/* USER CODE BEGIN WHILE */
+while (1)
+{
+    temp = atk_qmi8658_get_temperature(); 
+
+    // ------------------- ??????? -------------------
+    // ???? 12 ??????!
+    uint8_t raw_buf[12];
+    
+    // ? 0x35 ??,??????? 12 ??????
+    atk_qmi8568_read_nbytes(0x35, raw_buf, 12); 
+
+    // 1. ??????? (?????)
+    int16_t raw_acc_x = (raw_buf[1] << 8) | raw_buf[0];
+    int16_t raw_acc_y = (raw_buf[3] << 8) | raw_buf[2];
+    int16_t raw_acc_z = (raw_buf[5] << 8) | raw_buf[4];
+
+    // 2. ??????? (?? 6 ??????)
+    int16_t raw_gyr_x = (raw_buf[7] << 8) | raw_buf[6];
+    int16_t raw_gyr_y = (raw_buf[9] << 8) | raw_buf[8];
+    int16_t raw_gyr_z = (raw_buf[11] << 8) | raw_buf[10];
+
+    // 3. ?????:±16g ??,???? 2048 LSB/g
+    float acc_x = (float)raw_acc_x / 2048.0f;
+    float acc_y = (float)raw_acc_y / 2048.0f;
+    float acc_z = (float)raw_acc_z / 2048.0f;
+
+    // 4. ?????:??????? ±2048 dps (?/?) ??
+    // 16???????? 32768? 32768 / 2048 = 16.0 
+    // ?????? 16.0 LSB/dps
+    float gyr_x = (float)raw_gyr_x / 16.0f;
+    float gyr_y = (float)raw_gyr_y / 16.0f;
+    float gyr_z = (float)raw_gyr_z / 16.0f;
+    // -------------------------------------------------------------
+
+    // 5. ???????
+    printf("Acc(g): X=%.2f, Y=%.2f, Z=%.2f | Gyr(dps): X=%.1f, Y=%.1f, Z=%.1f\r\n", 
+            acc_x, acc_y, acc_z, gyr_x, gyr_y, gyr_z);
+
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+    HAL_Delay(500);  // ??????? 500ms,????????
+}
+/* USER CODE END WHILE */
+	
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
-		HAL_Delay(500);
+		
+
+ 
+		
   }
   /* USER CODE END 3 */
 }

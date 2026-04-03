@@ -2,9 +2,11 @@
 "stm32_c8t6_test\startup_stm32f103xb.o"
 "stm32_c8t6_test\main.o"
 "stm32_c8t6_test\gpio.o"
+"stm32_c8t6_test\usart.o"
 "stm32_c8t6_test\stm32f1xx_it.o"
 "stm32_c8t6_test\stm32f1xx_hal_msp.o"
 "stm32_c8t6_test\stm32f1xx_hal_gpio_ex.o"
+"stm32_c8t6_test\stm32f1xx_hal_uart.o"
 "stm32_c8t6_test\stm32f1xx_hal.o"
 "stm32_c8t6_test\stm32f1xx_hal_rcc.o"
 "stm32_c8t6_test\stm32f1xx_hal_rcc_ex.o"
@@ -16,7 +18,12 @@
 "stm32_c8t6_test\stm32f1xx_hal_flash_ex.o"
 "stm32_c8t6_test\stm32f1xx_hal_exti.o"
 "stm32_c8t6_test\system_stm32f1xx.o"
---strict --scatter "STM32_C8T6_Test\STM32_C8T6_Test.sct"
+"stm32_c8t6_test\atk_qmi8658.o"
+"stm32_c8t6_test\imu.o"
+"stm32_c8t6_test\myiic.o"
+"stm32_c8t6_test\delay.o"
+"stm32_c8t6_test\sys.o"
+--library_type=microlib --strict --scatter "STM32_C8T6_Test\STM32_C8T6_Test.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "STM32_C8T6_Test.map" -o STM32_C8T6_Test\STM32_C8T6_Test.axf

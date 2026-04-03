@@ -1,0 +1,19 @@
+# Keil 编译生成的垃圾文件
+*.o
+*.d
+*.crf
+*.htm
+*.dep
+*.lnp
+*.axf
+*.map
+*.hex
+*.sct
+*.lst
+*.uvguix.*
+JLinkLog.txt
+*.bak
+
+# 忽略编译输出文件夹
+MDK-ARM/Objects/
+MDK-ARM/Listings/

@@ -18,4 +18,6 @@ stm32_c8t6_test/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash_ex.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pwr.h \
-  ..\Core\Inc\gpio.h
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h \
+  ..\Core\Inc\usart.h ..\Core\Inc\gpio.h ..\BSP\atk_qmi8658.h \
+  ..\Sys\sys.h ..\Sys\delay.h
